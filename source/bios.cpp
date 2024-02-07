@@ -115,10 +115,14 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                     std::cout << "Checksum equals zero." << std::endl;
                 }
                 std::cout << "Checksum: " << checksum << std::endl;
+                option = '\0';
+                biosFileName.clear();
             }
             catch(const std::exception& e) { 
                 std::cerr << "Exception caught: " << e.what() << std::endl;
                 pauseScreen();
+                option = '\0';
+                biosFileName.clear();
                 goto returntoChoice1;
             }
         break;
@@ -126,7 +130,7 @@ void checksumCalculator(char& option, std::string& biosFileName) {
             returntoChoice2:
             try {
                 if (biosFileName.empty()){
-                    std::string biosFileName, exitString = "quit";
+                    std::string exitString = "quit";
                     std::cout << "Please enter VGA bios file name: " << std::endl;
                     std::cout << "Type quit or Quit to return to main menu." << std::endl;
                     std::cout << "Type exit, q, or Q to exit the program." << std::endl;
@@ -161,9 +165,13 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                 } else {
                     std::cout << "Checksum does not equal zero." << std::endl;
                 }
+                option = '\0';
+                biosFileName.clear();
             } catch(const std::exception& e) {
                 std::cerr << "Exception caught: " << e.what() << std::endl;
                 pauseScreen();
+                option = '\0';
+                biosFileName.clear();
                 goto returntoChoice2;
             }
             break;
