@@ -180,12 +180,19 @@ void checksumCalculator(char& option, std::string& biosFileName) {
             pauseScreen();
             continue;
         }
-        char continueOption = 'y';
+        char continueOption = 'n'; // Default to 'no'
+        std::string inputLine;
         std::cout << "Do you want to scan another bios file? (y/n): ";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        continueOption = std::cin.get();
-        if (std::tolower(continueOption) != 'y') {
-            break; 
+        std::getline(std::cin, inputLine);
+        if (!inputLine.empty()) {
+            continueOption = std::tolower(inputLine[0]);
+        }
+        if (continueOption == 'y') {
+            continue;
+            biosFileName = "";
+            option = '\0';
+        } else {
+            break;
         }
     } while (true);
 }
