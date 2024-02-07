@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <limits>
 #include <string>
+#include <cstdint>
 void clearScreen() {
     #ifdef _WIN32
     system("cls");
@@ -86,7 +87,7 @@ int main() {
                 checksum %= static_cast<int>(fileSize); // Calculate checksum
                 if (checksum != 0) {
                     std::cout << "Checksum does not equal zero." << std::endl;
-                    unsigned int twoByteAddition = fileSize - checksum;
+                    std::uint64_t twoByteAddition = static_cast<std::uint64_t>(fileSize) - static_cast<std::uint64_t>(checksum);
                     twoByteAddition = twoByteAddition & 0xFFFF;
                     
                     //Convert to little-endian
