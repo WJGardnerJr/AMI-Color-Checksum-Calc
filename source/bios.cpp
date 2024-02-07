@@ -23,6 +23,7 @@ void pauseScreen() {
 }
 int main() {
     do {
+        mainMenu:
         clearScreen();
         char option;
         std::cout << "Please select an option:" << std::endl;
@@ -41,10 +42,15 @@ int main() {
         case '1':
             returntoChoice1:
             try {
-                std::string biosFileName;
+                std::string biosFileName, exitString = "quit";
                 int bitSize = 0;
-                std::cout << "Please enter AMI Color BIOS (or older AMI 64 KB BIOS) file name: ";
+                std::cout << "Please enter AMI Color BIOS (or older AMI 64 KB BIOS) file name: " << std::endl;
+                std::cout << "Type quit or Quit to return to main menu." << std::endl;
+                std::cout << ">";
                 std::cin >> biosFileName;
+                std::tolower(biosFileName[0]);
+                int stringComp = (biosFileName).compare(exitString);
+                if (stringComp == 0) { goto mainMenu;}
                 std::ifstream biosFile(biosFileName, std::ios::binary | std::ios::ate);
                 if (!biosFile.is_open()) {
                     throw std::runtime_error("Failed to open bios file.");
@@ -59,7 +65,7 @@ int main() {
                 biosFile.close(); // Close the file as its contents are now in rawBiosData
 
                 const size_t blockSize = 16; // Calculate checksum based on blocks of 16 bytes
-                size_t blockCount = fileSize / blockSize; //Calculate numebr of blocks
+                size_t blockCount = fileSize / blockSize; //Calculate number of blocks
                 //Print bios data
                 std::cout << "\n===== " << biosFileName << " data ======" << std::endl;
                 std::cout << "File size: " << fileSize / 1024 << " KB" << std::endl;
@@ -111,9 +117,14 @@ int main() {
         case '2':
             returntoChoice2:
             try {
-                std::string biosFileName;
-                std::cout << "Please enter VGA bios file name: ";
+                std::string biosFileName, exitString = "quit";
+                std::cout << "Please enter VGA bios file name: " << std::endl;
+                std::cout << "Type quit or Quit to return to main menu." << std::endl;
+                std::cout << ">";
                 std::cin >> biosFileName;
+                std::tolower(biosFileName[0]);
+                int stringComp = (biosFileName).compare(exitString);
+                if (stringComp == 0) { goto mainMenu;}
                 std::ifstream biosFile(biosFileName, std::ios::binary);
                 if (!biosFile.is_open()) {
                     throw std::runtime_error("Failed to open bios file.");
@@ -153,7 +164,7 @@ int main() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         continueOption = std::cin.get();
         if (std::tolower(continueOption) != 'y') {
-            break; // Exit the loop if the user does not input 'y' or 'Y'
+            break; 
         }
     } while (true);
     return 0;
