@@ -22,12 +22,14 @@ void pauseScreen() {
     std::cout << "\nPress Enter to continue...";
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get(); // Wait for user to press Enter
+    std::cin.clear();
 }
-void checksumCalculator(char& option, std::string& biosFileName) {
+void checksumCalculator(char option, std::string biosFileName) {
     do {
         if (option == '\0'){
             mainMenu:
             clearScreen();
+            biosFileName.clear();
             std::cout << "Please select an option:" << std::endl;
             std::cout << "==== MENU ====" << std::endl;
             std::cout << "1.) Read AMI Hi-Color BIOS file (and earlier)" << std::endl;
@@ -49,15 +51,15 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                     std::string exitString = "quit";
                     int bitSize = 0;
                     std::cout << "Please enter AMI Color BIOS (or older AMI 64 KB BIOS) file name: " << std::endl;
-                    std::cout << "Type quit or Quit to return to main menu." << std::endl;
-                    std::cout << "Type exit, q, or Q to exit the program." << std::endl;
+                    std::cout << "Type [Q/q]uit to return to main menu." << std::endl;
+                    std::cout << "Type exit to exit the program." << std::endl;
                     std::cout << ">";
                     std::cin >> biosFileName;
                     std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
                     [](unsigned char c){ return std::tolower(c); });
                     int stringComp = (biosFileName).compare(exitString);
                     if (stringComp == 0) { goto mainMenu;}
-                    if (biosFileName == "exit" || biosFileName == "q" || biosFileName == "Q") { exit(0); }
+                    if (biosFileName == "exit") { exit(0); }
                 }
                 std::ifstream biosFile(biosFileName, std::ios::binary | std::ios::ate);
                 if (!biosFile.is_open()) {
@@ -115,14 +117,12 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                     std::cout << "Checksum equals zero." << std::endl;
                 }
                 std::cout << "Checksum: " << checksum << std::endl;
-                option = '\0';
-                biosFileName.clear();
             }
             catch(const std::exception& e) { 
                 std::cerr << "Exception caught: " << e.what() << std::endl;
                 pauseScreen();
-                option = '\0';
-                biosFileName.clear();
+                std:: cout << "Please re-enter BIOS file name: ";
+                std::cin >> biosFileName;
                 goto returntoChoice1;
             }
         break;
@@ -132,8 +132,8 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                 if (biosFileName.empty()){
                     std::string exitString = "quit";
                     std::cout << "Please enter VGA bios file name: " << std::endl;
-                    std::cout << "Type quit or Quit to return to main menu." << std::endl;
-                    std::cout << "Type exit, q, or Q to exit the program." << std::endl;
+                    std::cout << "Type [Q/q]uit to return to main menu." << std::endl;
+                    std::cout << "Type exit to exit the program." << std::endl;
                     std::cout << ">";
                     std::cin >> biosFileName;
                     std::cout << biosFileName;
@@ -141,7 +141,7 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                     [](unsigned char c){ return std::tolower(c); });
                     int stringComp = (biosFileName).compare(exitString);
                     if (stringComp == 0) { goto mainMenu; }
-                    if (biosFileName == "exit" || biosFileName == "q" || biosFileName == "Q") { exit(0); }
+                    if (biosFileName == "exit") { exit(0); }
                 }
                 std::ifstream biosFile(biosFileName, std::ios::binary);
                 if (!biosFile.is_open()) {
@@ -165,41 +165,38 @@ void checksumCalculator(char& option, std::string& biosFileName) {
                 } else {
                     std::cout << "Checksum does not equal zero." << std::endl;
                 }
-                option = '\0';
-                biosFileName.clear();
             } catch(const std::exception& e) {
                 std::cerr << "Exception caught: " << e.what() << std::endl;
                 pauseScreen();
-                option = '\0';
-                biosFileName.clear();
+                std:: cout << "Please re-enter BIOS file name: ";
+                std::cin >> biosFileName;
                 goto returntoChoice2;
             }
             break;
         default:
             std::cerr << "Invalid option. Please try again.\n" << std::endl;
             pauseScreen();
-            continue;
+            goto mainMenu;
         }
         char continueOption = 'n'; // Default to 'no'
         std::string inputLine;
         std::cout << "Do you want to scan another bios file? (y/n): ";
-        std::getline(std::cin, inputLine);
+        std::cin >> inputLine;
         if (!inputLine.empty()) {
             continueOption = std::tolower(inputLine[0]);
         }
-        if (continueOption == 'y') {
-            continue;
-            biosFileName = "";
-            option = '\0';
-        } else {
+        if (continueOption != 'y' || continueOption == '\n' || continueOption == '\0') {
+            std::cout << "Goodbye!" << std::endl;
             break;
+        } else {
+            goto mainMenu;
         }
     } while (true);
 }
 int main(int argc, char* argv[]) {
     int choice = 0;
     char option = '\0';
-    std::string filename = "", biosFileName;
+    std::string filename, biosFileName;
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]) == "-ami" || std::string(argv[i]) == "ami"){
             choice = 1;
@@ -212,7 +209,7 @@ int main(int argc, char* argv[]) {
                 filename = argv[++i];
         }
     }
-    if (choice > 0 || filename != "") {
+    if (choice > 0) {
         option = '0' + choice;
         biosFileName = filename;
     }
