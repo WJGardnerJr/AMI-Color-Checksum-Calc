@@ -30,7 +30,7 @@ int main() {
         std::cout << "==== MENU ====" << std::endl;
         std::cout << "1.) Read AMI Hi-Color BIOS file (and earlier)" << std::endl;
         std::cout << "2.) Read 32 KB VGA BIOS file" << std::endl;
-        std::cout << "Press to [Q/q]uit" << std::endl << std::endl;
+        std::cout << "Type [Q/q] to quit" << std::endl << std::endl;
         std::cout << ">";
         std::cin >> option;
         if (std::tolower(option) == 'q') { break; }
