@@ -1,8 +1,8 @@
 # Checksum-Calculator
 
-This program calculates the checksum of AMI Color BIOSes and other AMI BIOSes of 64 KB size using simple summation and modulus. It can do the same for simple 32 KB VGA BIOSes from the same era. It also calculates the additional two bits necessary to set the checksum equal to zero, if modifications are made that otherwise cause the checksum to become invalid.
+This program calculates the checksum of AMI Color BIOSes and other AMI BIOSes of 64 KB size using a simple summation and modulus algorithm. It can do the same for 32 KB VGA BIOSes from the same era. For AMI BIOSes only, also calculates the additional two bits necessary to set the checksum equal to zero if modifications are made that otherwise cause the checksum to become invalid.
 
-This can be particularly useful if trying to edit a BIOS in hexidecimal, so as to unhide specific options.
+This can be particularly useful if trying to edit a BIOS in hexidecimal, so as to unhide specific menu options.
 
 This program can be called in a couple of ways:
  - You can simply launch it and interact with the terminal.
