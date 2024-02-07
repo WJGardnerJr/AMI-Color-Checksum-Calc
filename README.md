@@ -6,13 +6,20 @@ This can be particularly useful if trying to edit a BIOS in hexidecimal, so as t
 
 This program can be called in a couple of ways:
  - You can simply launch it and interact with the terminal.
- - Command line arguments are parsed, so you can call the program from a command line as follows:
+ - Command line arguments are parsed, so you can call the program from a Windows command line as follows:
     - For 64 KB AMI Color (or older style AMI) BIOSes, use: 
         - checksumcalc.exe -ami filename.bin 
         - checksumcalc.exe ami filename.bin
     - For 32 KB VGA BIOSes, use:
         - checksumcalc.exe -vga filename.bin 
         - checksumcalc.exe vga filename.bin
+  - Likewise, for a *nix command line, use the form:
+    - For 64 KB AMI Color (or older style AMI) BIOSes, use: 
+        - ./checksumcalc -ami filename.bin 
+        - ./checksumcalc ami filename.bin
+    - For 32 KB VGA BIOSes, use:
+        - ./checksumcalc -vga filename.bin 
+        - ./checksumcalc vga filename.bin
 
 See here for more information about this process: https://www.vogons.org/viewtopic.php?t=82233
 
