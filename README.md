@@ -17,5 +17,6 @@ This program can be called in a couple of ways:
 See here for more information about this process: https://www.vogons.org/viewtopic.php?t=82233
 
 Check out the bin folder for pre-compiled binaries:
- - checksumcalc.exe was compiled with g++ on Windows 11 and works on all 32/64-bit Windows and Linux OSes
+ - checksumcalc.exe was compiled with g++ on Windows 11 and works on all 32/64-bit Windows OSes
+ - checksumcalc was compiled on Debian 11 Bullseye and works on all *nix-based OSes
  - A 16-bit DOS port of this is planned, but not yet completed.
