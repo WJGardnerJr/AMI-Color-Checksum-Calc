@@ -10,6 +10,7 @@
 #include <string>
 #include <cstdint>
 #include <algorithm>
+#include <cstring>
 void clearScreen() {
     #ifdef _WIN32
     system("cls");
@@ -22,37 +23,42 @@ void pauseScreen() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin.get(); // Wait for user to press Enter
 }
-int main() {
+void checksumCalculator(char& option, std::string& biosFileName) {
     do {
-        mainMenu:
-        clearScreen();
-        char option;
-        std::cout << "Please select an option:" << std::endl;
-        std::cout << "==== MENU ====" << std::endl;
-        std::cout << "1.) Read AMI Hi-Color BIOS file (and earlier)" << std::endl;
-        std::cout << "2.) Read 32 KB VGA BIOS file" << std::endl;
-        std::cout << "Type [Q/q] to quit" << std::endl << std::endl;
-        std::cout << ">";
-        std::cin >> option;
-        if (std::tolower(option) == 'q') { break; }
-        if (std::cin.fail()) {
-            std::cin.clear(); // Clear error flags
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+        if (option == '\0'){
+            mainMenu:
+            clearScreen();
+            std::cout << "Please select an option:" << std::endl;
+            std::cout << "==== MENU ====" << std::endl;
+            std::cout << "1.) Read AMI Hi-Color BIOS file (and earlier)" << std::endl;
+            std::cout << "2.) Read 32 KB VGA BIOS file" << std::endl;
+            std::cout << "Type [Q/q] to quit" << std::endl << std::endl;
+            std::cout << ">";
+            std::cin >> option;
+            if (std::tolower(option) == 'q') { break; }
+            if (std::cin.fail()) {
+                std::cin.clear(); // Clear error flags
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+            }
         }
         switch(option) {
         case '1':
             returntoChoice1:
             try {
-                std::string biosFileName, exitString = "quit";
-                int bitSize = 0;
-                std::cout << "Please enter AMI Color BIOS (or older AMI 64 KB BIOS) file name: " << std::endl;
-                std::cout << "Type quit or Quit to return to main menu." << std::endl;
-                std::cout << ">";
-                std::cin >> biosFileName;
-                std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-                int stringComp = (biosFileName).compare(exitString);
-                if (stringComp == 0) { goto mainMenu;}
+                if (biosFileName.empty()){
+                    std::string exitString = "quit";
+                    int bitSize = 0;
+                    std::cout << "Please enter AMI Color BIOS (or older AMI 64 KB BIOS) file name: " << std::endl;
+                    std::cout << "Type quit or Quit to return to main menu." << std::endl;
+                    std::cout << "Type exit, q, or Q to exit the program." << std::endl;
+                    std::cout << ">";
+                    std::cin >> biosFileName;
+                    std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
+                    [](unsigned char c){ return std::tolower(c); });
+                    int stringComp = (biosFileName).compare(exitString);
+                    if (stringComp == 0) { goto mainMenu;}
+                    if (biosFileName == "exit" || biosFileName == "q" || biosFileName == "Q") { exit(0); }
+                }
                 std::ifstream biosFile(biosFileName, std::ios::binary | std::ios::ate);
                 if (!biosFile.is_open()) {
                     throw std::runtime_error("Failed to open bios file.");
@@ -119,17 +125,20 @@ int main() {
         case '2':
             returntoChoice2:
             try {
-                std::string biosFileName, exitString = "quit";
-                std::cout << "Please enter VGA bios file name: " << std::endl;
-                std::cout << "Type quit or Quit to return to main menu." << std::endl;
-                std::cout << ">";
-                std::cin >> biosFileName;
-                std::cout << biosFileName;
-                std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-                std::cout << "Bios file name is now: " << biosFileName << std::endl;
-                int stringComp = (biosFileName).compare(exitString);
-                if (stringComp == 0) { goto mainMenu;}
+                if (biosFileName.empty()){
+                    std::string biosFileName, exitString = "quit";
+                    std::cout << "Please enter VGA bios file name: " << std::endl;
+                    std::cout << "Type quit or Quit to return to main menu." << std::endl;
+                    std::cout << "Type exit, q, or Q to exit the program." << std::endl;
+                    std::cout << ">";
+                    std::cin >> biosFileName;
+                    std::cout << biosFileName;
+                    std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
+                    [](unsigned char c){ return std::tolower(c); });
+                    int stringComp = (biosFileName).compare(exitString);
+                    if (stringComp == 0) { goto mainMenu; }
+                    if (biosFileName == "exit" || biosFileName == "q" || biosFileName == "Q") { exit(0); }
+                }
                 std::ifstream biosFile(biosFileName, std::ios::binary);
                 if (!biosFile.is_open()) {
                     throw std::runtime_error("Failed to open bios file.");
@@ -138,7 +147,6 @@ int main() {
                 std::vector<unsigned char> rawBiosData((std::istreambuf_iterator<char>(biosFile)),
                                                     std::istreambuf_iterator<char>());
                 biosFile.close(); 
-
                 // Calculate the 8-bit checksum by summing all bytes and taking modulus by 256
                 unsigned long long sum = 0;
                 for (unsigned char byte : rawBiosData) {
@@ -172,5 +180,27 @@ int main() {
             break; 
         }
     } while (true);
+}
+int main(int argc, char* argv[]) {
+    int choice = 0;
+    char option = '\0';
+    std::string filename = "", biosFileName;
+    for (int i = 1; i < argc; i++) {
+        if (std::string(argv[i]) == "-ami" || std::string(argv[i]) == "ami"){
+            choice = 1;
+            if (i + 1 < argc)
+                filename = argv[++i];
+        }
+        else if (std::string(argv[i]) == "-vga" || std::string(argv[i]) == "vga"){
+            choice = 2;
+            if (i + 1 < argc)
+                filename = argv[++i];
+        }
+    }
+    if (choice > 0 || filename != "") {
+        option = '0' + choice;
+        biosFileName = filename;
+    }
+    checksumCalculator(option, biosFileName);    
     return 0;
 }
