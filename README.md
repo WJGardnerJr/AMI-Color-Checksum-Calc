@@ -1,4 +1,4 @@
-# AMI-Calc
+# Checksum-Calculator
 
 This program calculates the checksum of AMI Color BIOSes and other AMI BIOSes of 64 KB size using simple summation and modulus. It can do the same for simple 32 KB VGA BIOSes from the same era. It also calculates the additional two bits necessary to set the checksum equal to zero, if modifications are made that otherwise cause the checksum to become invalid.
 
