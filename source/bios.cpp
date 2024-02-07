@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <iomanip>
 #include <sstream>
-#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <limits>
