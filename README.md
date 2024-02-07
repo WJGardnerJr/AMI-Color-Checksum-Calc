@@ -5,3 +5,7 @@ This program calculates the checksum of AMI Color BIOSes and other AMI BIOSes of
 This can be particularly useful if trying to edit a BIOS in hexidecimal, so as to unhide specific options.
 
 See here for more information about this process: https://www.vogons.org/viewtopic.php?t=82233
+
+Check out the bin folder for pre-compiled binaries:
+ - checksumcalc.exe was compiled with g++ on Windows 11 and works on all 32/64-bit Windows and Linux OSes
+ - A 16-bit DOS port of this is planned, but not yet completed.
