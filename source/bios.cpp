@@ -9,6 +9,7 @@
 #include <limits>
 #include <string>
 #include <cstdint>
+#include <algorithm>
 void clearScreen() {
     #ifdef _WIN32
     system("cls");
@@ -48,7 +49,8 @@ int main() {
                 std::cout << "Type quit or Quit to return to main menu." << std::endl;
                 std::cout << ">";
                 std::cin >> biosFileName;
-                std::tolower(biosFileName[0]);
+                std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
                 int stringComp = (biosFileName).compare(exitString);
                 if (stringComp == 0) { goto mainMenu;}
                 std::ifstream biosFile(biosFileName, std::ios::binary | std::ios::ate);
@@ -122,7 +124,10 @@ int main() {
                 std::cout << "Type quit or Quit to return to main menu." << std::endl;
                 std::cout << ">";
                 std::cin >> biosFileName;
-                std::tolower(biosFileName[0]);
+                std::cout << biosFileName;
+                std::transform(biosFileName.begin(), biosFileName.end(), biosFileName.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+                std::cout << "Bios file name is now: " << biosFileName << std::endl;
                 int stringComp = (biosFileName).compare(exitString);
                 if (stringComp == 0) { goto mainMenu;}
                 std::ifstream biosFile(biosFileName, std::ios::binary);
